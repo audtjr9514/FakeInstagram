@@ -1,0 +1,259 @@
+<body>
+<!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="/"><h3>명석's 타그램</h3></a>
+      
+      <% if user_signed_in?%>
+        <a id="userid"><%= current_user.name %> 님 환영합니다! </a>
+        <a href="/users/sign_out" class="btn btn-outline-secondary">
+          로그아웃
+        </a>
+      <% else %>
+        <button type="button" class="btn btn-outline-secondary sign_up" data-toggle="modal" data-target="#sign_up">
+          회원가입
+        </button>
+        <button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#login">
+          로그인
+        </button>
+      <%end%>
+     
+    </div>
+  </nav>
+  
+  <!-- 회원가입 Modal -->
+    <div  class="modal fade" id="sign_up" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">회원가입</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            
+            <form action='/users' method='post'>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <div class="form-inputs">
+              <div class="input string required user_name">
+                <label class="string required" for="user_name">이름</label>
+                <input class="string required" autofocus="autofocus" required="required" aria-required="true" type="text" value="" name="user[name]" id="user_name">
+              </div>
+              <div class="input email required user_email">
+                <label class="email required" for="user_email">이메일</label>
+                <input class="string email required" autofocus="autofocus" required="required" aria-required="true" type="email" value="" name="user[email]" id="user_email">
+              </div>
+              <div class="input password required user_password field_with_hint">
+                <label class="password required" for="user_password">비밀번호</label></label>
+                <input class="password required" required="required" aria-required="true" type="password" name="user[password]" id="user_password">
+                <span class="hint">6글자 이상으로 설정해주세용</span></div>
+              <div class="input password required user_password_confirmation">
+                <label class="password required" for="user_password_confirmation">비밀번호 확인</label>
+                <input class="password required" required="required" aria-required="true" type="password" name="user[password_confirmation]" id="user_password_confirmation">
+                </div>
+            </div>
+          
+            <div class="modal-footer">
+              <input type="submit" name="commit" value="회원가입" class="btn">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  <!-- 로그인 Modal -->
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">로그인</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            
+            <form action='/users/sign_in' method='post'>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+                <div class="form-inputs">
+                  <!--이메일-->
+                  <div class="input email optional user_email">
+                    <label class="email optional" for="user_email">이메일</label>
+                    <input class="string email optional" autofocus="autofocus" type="email" value="" name="user[email]" id="user_email">
+                  </div>
+                  <!--비밀번호-->
+                  <div class="input password optional user_password">
+                    <label class="password optional" for="user_password">비밀번호</label>
+                    <input class="password optional" type="password" name="user[password]" id="user_password">
+                  </div>
+                  <div class="input boolean optional user_remember_me"><input value="0" type="hidden" name="user[remember_me]">
+                    <label class="boolean optional checkbox" for="user_remember_me">
+                    <input class="boolean optional" type="checkbox" value="1" name="user[remember_me]" id="user_remember_me">
+                      아이디를 기억하시겠습니깡?ㅎㅎ
+                    </label>
+                  </div>
+                </div>
+                
+               <div class="modal-footer">
+                  <input type="submit" name="commit" value="로그인" class="btn">
+               </div>
+               
+             </form>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+  <!-- Page Content -->
+  <div class="container">
+  <!-- Page Heading -->
+    <h1 class="my-4"><strong>김명석</strong> 님의 인스타그램 비슷한거</h1>
+      
+  <!-- 게시물 작성 -->
+  <% if user_signed_in?%>
+    <form action ='/posts/create' method='post', multipart: true, enctype="multipart/form-data">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="row">
+        <div class="col-md-7">
+          <a href="#">
+            <img class="img-fluid rounded mb-3 mb-md-0" src="http://www.strobistkorea.com/data/editor/1711/thumb-238607ab531d475bee93c80e2f17566d_1511146116_55_1140x761.jpg" alt="">
+          </a>
+        </div>
+        <div class="col-md-5">
+          <h3>게시글 작성</h3>
+            <strong>TITLE</strong>
+              <input type='string' name='title' class="title"><br><br>
+            <strong>CONTENT</strong>
+              <input type='string' name='content' class="content"><br><br>
+            <strong>CONTENT</strong>
+              <input type='file' name='img' accept="image/*"><br><br>
+            <strong>HashTag</strong>
+              <input type="text" name="hashtags" placeholder="#해쉬 태그는 ,로 구분해주세요" class="hashtag"><br><br> 
+            <input type='submit' class="btn btn-outline-secondary submit">
+        </div>
+      </div>
+    </form>
+    <%end%>
+  
+  <!-- /.row -->
+  <hr>
+
+  <!-- 게시물 확인 -->
+    <% @dbs.each_with_index do |x, index| %>
+      <div class="row">
+        <div class="col-md-7">
+          <div class="image1">
+          <a href="#">
+            <% if x.img_url.nil? %>
+              <img  class="image1 rounded mb-3 mb-md-0" img-align="center" src="http://www.strobistkorea.com/data/editor/1711/thumb-238607ab531d475bee93c80e2f17566d_1511146116_55_1140x761.jpg" alt="">
+            <%else%>
+              <img  class="image1 rounded mb-3 mb-md-0" img-align="center" src="<%= x.img_url %>" alt="">
+            <%end%>
+          </div>
+
+         </a>
+        </div>
+        <div class="col-md-5">
+          <h3><%=@dbs.size-index%>번째 게시글</h3>
+          <span class="comment"><%= x.created_at.strftime("%m-%d %H:%M")%></span><br>
+          <% if user_signed_in?%>
+            <% if current_user.id == x.user.id %>
+            <button type="btn btn-dark btn-xl js-scroll-trigger" class="btn btn-outline-secondary" data-toggle="modal" data-target="#myModal<%= x.id %>">
+              수정
+            </button>
+            
+            <a href='/posts/delete/<%=x.id%>' class="btn btn-outline-secondary"> 
+              삭제
+            </a><br>
+          <%end%>
+          <%end%>
+          
+          <a> <strong> 작성자 ID </strong> : <%= x.user.email %>  ||  </a>
+          <a> <strong> 이름 </strong> : <%=x.user.name%></a><br>
+          <a> <strong> TITLE </strong> : <%=x.title%> </a><br>
+          <a> <strong> CONTENT </strong> : <%=x.content%></a><br>
+          <strong> HashTag : </strong>
+          <% x.hashtags.each do |tag| %>
+            #<%= tag.name %>
+          <% end %><br>
+          <hr>
+          
+          <!-- 댓글 칸 -->
+          <% x.comments.each do |c| %>
+            <strong>┗</strong>  <%= c.user.name %> : <%=c.content%>　　　<span class="comment"> <%=c.created_at.strftime("%m-%d %H:%M")%></span>
+            <% if user_signed_in?%> 
+            <% if current_user.id == c.user.id %>
+              <a href='/comments/delete/<%= c.id %>' class="btn btn-outline-light">삭제</a>
+            <%end%>
+            <%end%>
+            <br>
+          <%end%>
+        
+          <% if user_signed_in?%> 
+          <form action="/posts/index/<%=x.id%>/create" method="post">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+             <input type='textarea' name='comment' placeholder="댓 글 입 력" class="comment">
+             <button type="submit" class="btn btn-light">댓글 입력</button>
+          </form>
+          <%end%>
+        </div>
+      </div>
+    <hr>
+  
+  <!-- /.row -->
+      
+  <!-- Modal 게시물 수정 칸 -->
+    <div class="modal fade" id="myModal<%= x.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+        
+            <form action='/posts/update/<%=x.id%>' method='post'>
+              <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+              <div class="modal-body">
+                제목<br>
+                <input type='string' name='title' value='<%=x.title%>'><br>
+                내용<br>
+                <input type='string' name='content' value='<%=x.content%>'><br>
+                해시태그<br>
+                <input type='text' name='hashtags'><br>
+                <br>
+              </div>
+              <div class="modal-footer">
+                <input type='submit' value='저장' class="btn btn-primary"></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% end %>
+        
+      
+      
+      
+      
+      
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; 김명석 + 조민국 _ 멋쟁이 사자처럼 6기 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="assets/jquery.min.js"></script>
+    <script src="assets/bootstrap.bundle.min.js"></script>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+</body>
